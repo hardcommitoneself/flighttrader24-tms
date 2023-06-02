@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['as' => 'api.'], function() {
     Route::post('/v1/tickets', [TicketController::class, 'create']);
+    Route::delete('/v1/tickets/{id}', [TicketController::class, 'cancel']);
 });

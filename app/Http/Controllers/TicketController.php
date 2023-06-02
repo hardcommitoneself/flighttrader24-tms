@@ -43,12 +43,32 @@ class TicketController extends Controller
             $ticket->save();
 
             return response()->json([
-                'msg' => 'Ticket created successfully',
+                'msg' => 'Ticket has been created successfully.',
                 'ticket' => $ticket
             ], 201);
         } catch (Exception $e) {
             Log::critical($e->getMessage());
 
+            return response()->json([
+                'msg' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Cancel ticket
+     */
+    public function cancel(string $id): JsonResponse
+    {
+        try {
+            $ticket = Ticket::findOrFail($id);
+
+            $ticket->delete();
+
+            return response()->json([
+                'msg' => 'Ticket has been cancelled successfully.'
+            ], 202);
+        } catch (Exception $e) {
             return response()->json([
                 'msg' => $e->getMessage()
             ], 500);
