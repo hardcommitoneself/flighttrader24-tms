@@ -79,7 +79,7 @@ class TicketController extends Controller
     /**
      * Change seat
      */
-    public function changeSeat(Request $request, string $id)
+    public function changeSeat(Request $request, string $id): JsonResponse
     {
         $request->validate([
             'seat' => [
