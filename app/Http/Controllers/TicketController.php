@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use App\Models\Ticket;
 use App\Rules\UniqueSeat;
+use App\Rules\SameSeat;
 use Exception;
 
 class TicketController extends Controller
@@ -67,6 +68,39 @@ class TicketController extends Controller
 
             return response()->json([
                 'msg' => 'Ticket has been cancelled successfully.'
+            ], 202);
+        } catch (Exception $e) {
+            return response()->json([
+                'msg' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Change seat
+     */
+    public function changeSeat(Request $request, string $id)
+    {
+        $request->validate([
+            'seat' => [
+                'required',
+                'numeric',
+                'min:1',
+                'max:32',
+                new SameSeat($id)
+            ]
+        ]);
+
+        try {
+            $ticket = Ticket::findOrFail($id);
+
+            $ticket->seat = $request->input('seat');
+
+            $ticket->save();
+
+            return response()->json([
+                'msg' => 'The seat has been updated successfully.',
+                'ticket' => $ticket
             ], 202);
         } catch (Exception $e) {
             return response()->json([
